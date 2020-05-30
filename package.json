@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpileOnly src/server.ts",
-    "build": "netlify-lambda build express"
+    "build": "netlify-lambda build src",
+    "postinstall": "netlify-lambda install"
   },
   "keywords": [
     "netlify",
@@ -26,6 +27,7 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.10.1",
     "@prisma/cli": "2.0.0-beta.5",
     "@types/body-parser": "1.19.0",
     "@types/express": "4.17.6",
