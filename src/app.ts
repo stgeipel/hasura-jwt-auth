@@ -3,6 +3,7 @@ import express from 'express'
 import healthController from './controller/health'
 import passport from 'passport'
 import dotenv from 'dotenv'
+import serverless from 'serverless-http'
 
 import * as userController from './controller/user'
 
@@ -23,3 +24,4 @@ app.get('/', (req, res) => {
 })
 
 export default app
+export const handler = () => serverless(app)
