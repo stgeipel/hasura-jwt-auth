@@ -1,0 +1,13 @@
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "s.g@mail.de",
+    "password": "123"
+}
+
+
+###
+
+Get http://localhost:3000/check/health
+Content-Type: application/json
