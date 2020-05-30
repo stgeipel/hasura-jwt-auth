@@ -37,7 +37,7 @@ You can access the REST API of the server using the following endpoints:
 
 - `/login`: Login as User
   - Body:
-    - `email: String` (required): The title of the post
-    - `password: String` (optional): The content of the post
+    - `email: String` (required): email address or username
+    - `password: String` (required): password from user
 
 
