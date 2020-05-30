@@ -1,25 +1,21 @@
-# REST API Example
-
-This example shows how to implement a **REST API with TypeScript** using [Express](https://expressjs.com/) and [Prisma Client](https://github.com/prisma/prisma2/blob/master/docs/prisma-client-js/api.md). It is based on a SQLite database, you can find the database file with some dummy data at [`./prisma/dev.db`](./prisma/dev.db).
-
 ## How to use
 
-### 1. Download example & install dependencies
+### 1. clone & install dependencies
 
 Clone this repository:
 
 ```
-git clone git@github.com:prisma/prisma-examples.git --depth=1
+git clone https://github.com/stgeipel/hasura-jwt-auth.git
 ```
 
 Install npm dependencies:
 
 ```
-cd prisma-examples/typescript/rest-express
 npm install
+or
+yarn install
 ```
 
-Note that this also generates Prisma Client JS into `node_modules/@prisma/client` via a `postinstall` hook of the `@prisma/client` package from your `package.json`.
 
 ### 2. Start the REST API server
 
@@ -27,39 +23,22 @@ Execute this command to start the server:
 
 ```
 npm run dev
+or
+yarn dev
 ```
 
-The server is now running on `http://localhost:3000`. You can send the API requests implemented in `index.js`, e.g. [`http://localhost:3000/feed`](http://localhost:3000/feed).
+The server is now running on `http://localhost:3000`. You can send the API requests implemented in `server.ts`.
 
 ## Using the REST API
 
 You can access the REST API of the server using the following endpoints:
 
-### `GET`
-
-- `/post/:id`: Fetch a single post by its `id`
-- `/feed`: Fetch all _published_ posts
-- `/filterPosts?searchString={searchString}`: Filter posts by `title` or `content`
-
 ### `POST`
 
-- `/post`: Create a new post
+- `/login`: Login as User
   - Body:
-    - `title: String` (required): The title of the post
-    - `content: String` (optional): The content of the post
-    - `authorEmail: String` (required): The email of the user that creates the post
-- `/user`: Create a new user
-  - Body:
-    - `email: String` (required): The email address of the user
-    - `name: String` (optional): The name of the user
-
-### `PUT`
-
-- `/publish/:id`: Publish a post by its `id`
-
-### `DELETE`
-
-- `/post/:id`: Delete a post by its `id`
+    - `email: String` (required): The title of the post
+    - `password: String` (optional): The content of the post
 
 
 ## Evolving the app
@@ -113,27 +92,15 @@ npx prisma introspect
 The `introspect` command updates your `schema.prisma` file. It now includes the `Profile` model and its 1:1 relation to `User`:
 
 ```prisma
-model Post {
-  author    User?
-  content   String?
-  id        Int     @id
-  published Boolean @default(false)
-  title     String
+
+
+model user {
+  userid   Int    @default(autoincrement()) @id
+  username String @unique
+  email    String @unique
+  password String
 }
 
-model User {
-  email   String   @unique
-  id      Int      @id
-  name    String?
-  post    Post[]
-  profile Profile?
-}
-
-model Profile {
-  bio  String?
-  id   Int     @id
-  user User
-}
 ```
 
 ### 3. Generate Prisma Client
@@ -146,58 +113,3 @@ npx prisma generate
 
 This command updated the Prisma Client API in `node_modules/@prisma/client`.
 
-### 4. Use the updated Prisma Client in your application code
-
-You can now use your `PrismaClient` instance to perform operations against the new `Profile` table. Here are some examples:
-
-#### Create a new profile for an existing user
-
-```ts
-const profile = await prisma.profile.create({
-  data: {
-    bio: 'Hello World',
-    user: {
-      connect: { email: 'alice@prisma.io' },
-    },
-  },
-})
-```
-
-#### Create a new user with a new profile
-
-```ts
-const user = await prisma.user.create({
-  data: {
-    email: 'john@prisma.io',
-    name: 'John',
-    profile: {
-      create: {
-        bio: 'Hello World',
-      },
-    },
-  },
-})
-```
-
-#### Update the profile of an existing user
-
-```ts
-const userWithUpdatedProfile = await prisma.user.update({
-  where: { email: 'alice@prisma.io' },
-  data: {
-    profile: {
-      update: {
-        bio: 'Hello Friends',
-      },
-    },
-  },
-})
-```
-
-## Next steps
-
-- Read the holistic, step-by-step [Prisma Framework tutorial](https://github.com/prisma/prisma2/blob/master/docs/tutorial.md)
-- Check out the [Prisma Framework docs](https://github.com/prisma/prisma2) (e.g. for [data modeling](https://github.com/prisma/prisma2/blob/master/docs/data-modeling.md), [relations](https://github.com/prisma/prisma2/blob/master/docs/relations.md) or the [Prisma Client API](https://github.com/prisma/prisma2/tree/master/docs/prisma-client-js/api.md))
-- Share your feedback in the [`prisma2-preview`](https://prisma.slack.com/messages/CKQTGR6T0/) channel on the [Prisma Slack](https://slack.prisma.io/)
-- Create issues and ask questions on [GitHub](https://github.com/prisma/prisma2/)
-- Track Prisma 2's progress on [`isprisma2ready.com`](https://isprisma2ready.com)
